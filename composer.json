@@ -1,0 +1,30 @@
+{
+  "name": "furqansiddiqui/base58check-php",
+  "description": "Base58Check Encoding lib for PHP",
+  "type": "library",
+  "homepage": "https://github.com/furqansiddiqui/base58check-php",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Furqan A. Siddiqui",
+      "email": "hello@furqansiddiqui.com",
+      "homepage": "https://www.furqansiddiqui.com",
+      "role": "Author"
+    }
+  ],
+  "require": {
+    "php-64bit": "^7.2",
+    "ext-openssl": "*",
+    "ext-bcmath": "*",
+    "furqansiddiqui/bcmath-php": "^0.1.0",
+    "furqansiddiqui/data-types-php": "^0.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "FurqanSiddiqui\\Base58\\": [
+        "src"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}
