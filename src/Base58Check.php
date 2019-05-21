@@ -115,7 +115,10 @@ class Base58Check
      */
     public function encode($hexits): Base58Encoded
     {
-        if (!$hexits instanceof Base16) {
+        if ($hexits instanceof Base16) {
+            $buffer = $hexits;
+            $hexits = $buffer->hexits(false);
+        } else {
             if (!preg_match('/^(0x)?[a-f0-9]+$/i', $hexits)) {
                 throw new \InvalidArgumentException('Only hexadecimal numbers can be decoded');
             }
@@ -124,10 +127,9 @@ class Base58Check
                 $hexits = substr($hexits, 2);
             }
 
-            $hexits = new Base16($hexits);
+            $buffer = new Base16($hexits);
         }
 
-        $buffer = $hexits;
         $checksumBytes = $this->checksumBytes ?? self::CHECKSUM_BYTES;
         if ($this->checksumCalculateFunc) {
             $checksum = call_user_func_array($this->checksumCalculateFunc, [$buffer->copy()]);
