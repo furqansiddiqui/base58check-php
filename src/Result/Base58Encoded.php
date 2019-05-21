@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace FurqanSiddiqui\Base58\Result;
 
+use FurqanSiddiqui\Base58\Base58Check;
+use FurqanSiddiqui\DataTypes\Base16;
 use FurqanSiddiqui\DataTypes\Buffer\AbstractStringType;
 
 /**
@@ -40,5 +42,13 @@ class Base58Encoded extends AbstractStringType
         }
 
         parent::__construct($encoded);
+    }
+
+    /**
+     * @return Base16
+     */
+    public function decode(): Base16
+    {
+        return (new Base58Check())->decode($this);
     }
 }

@@ -65,20 +65,69 @@ class Base58Check
     }
 
     /**
-     * @param string $hexits
+     * @param $encoded
+     * @return Base16
+     */
+    public function decode($encoded): Base16
+    {
+        if (!$encoded instanceof Base58Encoded) {
+            if (!is_string($encoded) || !$encoded) {
+                throw new \InvalidArgumentException('Base58check decode method expects Base58Encoded buffer or String as an argument');
+            }
+
+            $encoded = new Base58Encoded($encoded);
+        }
+
+        $base58Charset = $this->charset ?? Base58::CHARSET;
+        $base58Decode = BcBaseConvert::toBase10($encoded->value(), $base58Charset);
+        $data = BcBaseConvert::fromBase10($base58Decode, BcBaseConvert::CHARSET_BASE16);
+
+        $checksumLen = $this->checksumBytes ?? self::CHECKSUM_BYTES;
+        if ($checksumLen > 0) {
+            $checksumHexits = $checksumLen * 2;
+            $checksum = substr($data, -1 * $checksumHexits);
+            $data = substr($data, 0, -1 * $checksumHexits);
+        }
+
+        $data = new Base16($data);
+        if (isset($checksum)) {
+            if ($this->checksumCalculateFunc) {
+                $validateChecksum = call_user_func_array($this->checksumCalculateFunc, [$data->copy()]);
+                if (!$validateChecksum instanceof Binary) {
+                    throw new \UnexpectedValueException('Base58Check checksum compute callback must return datatype Binary');
+                }
+            } else {
+                $validateChecksum = $data->copy();
+                $validateChecksum->hash()->digest("sha256", 2, $checksumLen); // 2 iterations of SHA256, get N bytes from final iteration
+            }
+
+            if (!hash_equals($checksum, $validateChecksum->get()->base16())) {
+                throw new \UnexpectedValueException('Base58check decoded checksum does not match');
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param Base16|string $hexits
      * @return Base58Encoded
      */
-    public function encode(string $hexits): Base58Encoded
+    public function encode($hexits): Base58Encoded
     {
-        if (!preg_match('/^(0x)?[a-f0-9]+$/i', $hexits)) {
-            throw new \InvalidArgumentException('Only hexadecimal numbers can be decoded');
+        if (!$hexits instanceof Base16) {
+            if (!preg_match('/^(0x)?[a-f0-9]+$/i', $hexits)) {
+                throw new \InvalidArgumentException('Only hexadecimal numbers can be decoded');
+            }
+
+            if (substr($hexits, 0, 2) === "0x") {
+                $hexits = substr($hexits, 2);
+            }
+
+            $hexits = new Base16($hexits);
         }
 
-        if (substr($hexits, 0, 2) === "0x") {
-            $hexits = substr($hexits, 2);
-        }
-
-        $buffer = new Base16($hexits);
+        $buffer = $hexits;
         $checksumBytes = $this->checksumBytes ?? self::CHECKSUM_BYTES;
         if ($this->checksumCalculateFunc) {
             $checksum = call_user_func_array($this->checksumCalculateFunc, [$buffer->copy()]);
@@ -87,7 +136,7 @@ class Base58Check
             }
         } else {
             $checksum = $buffer->copy();
-            $checksum->hash()->digest("sha256", 2, $checksumBytes); // 2 iterations of SHA256, get last XX bytes from final iteration
+            $checksum->hash()->digest("sha256", 2, $checksumBytes); // 2 iterations of SHA256, get N bytes from final iteration
         }
 
         // Verify checksum length in bytes
