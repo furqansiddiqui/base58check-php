@@ -79,8 +79,15 @@ class Base58Check
             $encoded = new Base58Encoded($encoded);
         }
 
+        $encoded = $encoded->value();
+        // Convert leading ones to 00s?
+        if ($convertLeadingOnes) {
+            $leadingOnes = strlen($encoded) - strlen(ltrim($encoded, "1"));
+            $leadingOnes = intval($leadingOnes);
+        }
+
         $base58Charset = $this->charset ?? Base58::CHARSET;
-        $base58Decode = BcBaseConvert::toBase10($encoded->value(), $base58Charset);
+        $base58Decode = BcBaseConvert::toBase10($encoded, $base58Charset);
         $data = BcBaseConvert::fromBase10($base58Decode, BcBaseConvert::CHARSET_BASE16);
 
         $checksumLen = $this->checksumBytes ?? self::CHECKSUM_BYTES;
@@ -90,12 +97,8 @@ class Base58Check
             $data = substr($data, 0, -1 * $checksumHexits);
         }
 
-        // Convert leading ones to 00s?
-        if ($convertLeadingOnes) {
-            $leadingOnes = strlen($data) - strlen(ltrim($data, "1"));
-            if ($leadingOnes) {
-                $data = str_repeat("00", intval($leadingOnes)) . $data;
-            }
+        if (isset($leadingOnes) && $leadingOnes > 0) {
+            $data = str_repeat("00", $leadingOnes) . $data;
         }
 
         $data = new Base16($data);
