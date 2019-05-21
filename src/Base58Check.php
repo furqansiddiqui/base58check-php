@@ -66,9 +66,10 @@ class Base58Check
 
     /**
      * @param $encoded
+     * @param bool $convertLeadingOnes
      * @return Base16
      */
-    public function decode($encoded): Base16
+    public function decode($encoded, bool $convertLeadingOnes = true): Base16
     {
         if (!$encoded instanceof Base58Encoded) {
             if (!is_string($encoded) || !$encoded) {
@@ -87,6 +88,14 @@ class Base58Check
             $checksumHexits = $checksumLen * 2;
             $checksum = substr($data, -1 * $checksumHexits);
             $data = substr($data, 0, -1 * $checksumHexits);
+        }
+
+        // Convert leading ones to 00s?
+        if ($convertLeadingOnes) {
+            $leadingOnes = strlen($data) - strlen(ltrim($data, "1"));
+            if ($leadingOnes) {
+                $data = str_repeat("00", intval($leadingOnes)) . $data;
+            }
         }
 
         $data = new Base16($data);
