@@ -154,9 +154,9 @@ class Base58Check
         }
 
         // Verify checksum length in bytes
-        if ($checksum->length()->bytes() !== $checksumBytes) {
+        if ($checksum->size()->bytes() !== $checksumBytes) {
             throw new \UnexpectedValueException(
-                sprintf('Base58Check checksum must be precisely %d bytes long, got %d bytes', $checksumBytes, $checksum->length()->bytes())
+                sprintf('Base58Check checksum must be precisely %d bytes long, got %d bytes', $checksumBytes, $checksum->size()->bytes())
             );
         }
 
