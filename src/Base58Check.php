@@ -109,8 +109,8 @@ class Base58Check
                     throw new \UnexpectedValueException('Base58Check checksum compute callback must return datatype Binary');
                 }
             } else {
-                $validateChecksum = $data->copy();
-                $validateChecksum->hash()->digest("sha256", 2, $checksumLen); // 2 iterations of SHA256, get N bytes from final iteration
+                $validateChecksum = $data->binary()->hash()
+                    ->digest("sha256", 2, $checksumLen); // 2 iterations of SHA256, get N bytes from final iteration
             }
 
             if (!hash_equals($checksum, $validateChecksum->get()->base16())) {
@@ -149,8 +149,8 @@ class Base58Check
                 throw new \UnexpectedValueException('Base58Check checksum compute callback must return datatype Binary');
             }
         } else {
-            $checksum = $buffer->copy();
-            $checksum->hash()->digest("sha256", 2, $checksumBytes); // 2 iterations of SHA256, get N bytes from final iteration
+            $checksum = $buffer->binary()->hash()
+                ->digest("sha256", 2, $checksumBytes); // 2 iterations of SHA256, get N bytes from final iteration
         }
 
         // Verify checksum length in bytes
