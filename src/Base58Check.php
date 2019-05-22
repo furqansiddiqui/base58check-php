@@ -160,7 +160,7 @@ class Base58Check
             );
         }
 
-        $buffer->append($checksum->raw()); // Append checksum to passed binary data
+        $buffer->append($checksum->encode()->base16()); // Append checksum to passed binary data
         $leadingZeros = strlen($hexits) - strlen(ltrim($hexits, "0"));
         $leadingZeros = intval($leadingZeros / 2);
 
