@@ -113,7 +113,7 @@ class Base58Check
                     ->digest("sha256", 2, $checksumLen); // 2 iterations of SHA256, get N bytes from final iteration
             }
 
-            if (!hash_equals($checksum, $validateChecksum->get()->base16())) {
+            if (!hash_equals($checksum, $validateChecksum->encode()->base16()->hexits())) {
                 throw new \UnexpectedValueException('Base58check decoded checksum does not match');
             }
         }

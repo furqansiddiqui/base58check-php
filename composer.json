@@ -17,7 +17,7 @@
     "ext-openssl": "*",
     "ext-bcmath": "*",
     "furqansiddiqui/bcmath-php": "^0.2.0",
-    "furqansiddiqui/data-types-php": "^0.2.11"
+    "furqansiddiqui/data-types-php": "^0.2.20"
   },
   "autoload": {
     "psr-4": {
