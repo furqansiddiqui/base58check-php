@@ -16,8 +16,7 @@
     "php-64bit": "^7.2",
     "ext-openssl": "*",
     "ext-bcmath": "*",
-    "furqansiddiqui/bcmath-php": "^0.2.0",
-    "furqansiddiqui/data-types-php": "^0.2.20"
+    "comely-io/data-types": "^1.0.24"
   },
   "autoload": {
     "psr-4": {

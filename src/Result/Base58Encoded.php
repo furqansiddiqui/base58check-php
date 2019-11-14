@@ -14,16 +14,17 @@ declare(strict_types=1);
 
 namespace FurqanSiddiqui\Base58\Result;
 
-use FurqanSiddiqui\Base58\Base58Check;
-use FurqanSiddiqui\DataTypes\Base16;
-use FurqanSiddiqui\DataTypes\Buffer\AbstractStringType;
+use Comely\DataTypes\Buffer\AbstractBuffer;
 
 /**
  * Class Base58Encoded
  * @package FurqanSiddiqui\Base58\Result
  */
-class Base58Encoded extends AbstractStringType
+class Base58Encoded extends AbstractBuffer
 {
+    /** @var string|null */
+    private $charset;
+
     /**
      * Base58Encoded constructor.
      * @param string $encoded
@@ -31,24 +32,26 @@ class Base58Encoded extends AbstractStringType
      */
     public function __construct(string $encoded, ?string $charset = null)
     {
-        if (!$encoded) {
-            throw new \InvalidArgumentException('Base58Encoded objects cannot be constructed without data');
-        }
-
-        if ($charset) {
-            if (!preg_match('/^[' . preg_quote($charset, '/') . ']+$/', $encoded)) {
-                throw new \InvalidArgumentException('Encoded string does not match given Base58 charset');
-            }
-        }
-
+        $this->charset = $charset;
         parent::__construct($encoded);
     }
 
     /**
-     * @return Base16
+     * @param string|null $data
+     * @return string
      */
-    public function decode(): Base16
+    public function validatedDataTypeValue(?string $data): string
     {
-        return (new Base58Check())->decode($this);
+        if (!$data) {
+            throw new \InvalidArgumentException('Base58Encoded objects cannot be constructed without data');
+        }
+
+        if ($this->charset) {
+            if (!preg_match('/^[' . preg_quote($this->charset, '/') . ']+$/', $data)) {
+                throw new \InvalidArgumentException('Encoded string does not match given Base58 charset');
+            }
+        }
+
+        return $data;
     }
 }

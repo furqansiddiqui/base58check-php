@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace FurqanSiddiqui\Base58;
 
+use Comely\DataTypes\BcMath\BaseConvert;
+use Comely\DataTypes\Buffer\Base16;
+use Comely\DataTypes\Buffer\Binary;
 use FurqanSiddiqui\Base58\Result\Base58Encoded;
-use FurqanSiddiqui\BcMath\BcBaseConvert;
-use FurqanSiddiqui\DataTypes\Base16;
-use FurqanSiddiqui\DataTypes\Binary;
 
 /**
  * Class Base58Check
@@ -87,8 +87,8 @@ class Base58Check
         }
 
         $base58Charset = $this->charset ?? Base58::CHARSET;
-        $base58Decode = BcBaseConvert::toBase10($encoded, $base58Charset);
-        $data = BcBaseConvert::fromBase10($base58Decode, BcBaseConvert::CHARSET_BASE16);
+        $base58Decode = BaseConvert::toBase10($encoded, $base58Charset);
+        $data = BaseConvert::fromBase10($base58Decode, BaseConvert::CHARSET_BASE16);
 
         $checksumLen = $this->checksumBytes ?? self::CHECKSUM_BYTES;
         if ($checksumLen > 0) {
@@ -164,9 +164,9 @@ class Base58Check
         $leadingZeros = strlen($hexits) - strlen(ltrim($hexits, "0"));
         $leadingZeros = intval($leadingZeros / 2);
 
-        $hex2dec = BcBaseConvert::toBase10($buffer->hexits(false), BcBaseConvert::CHARSET_BASE16, false);
+        $hex2dec = BaseConvert::toBase10($buffer->hexits(false), BaseConvert::CHARSET_BASE16, false);
         $base58Charset = $this->charset ?? Base58::CHARSET;
-        $base58Encoded = BcBaseConvert::fromBase10($hex2dec, $base58Charset);
+        $base58Encoded = BaseConvert::fromBase10($hex2dec, $base58Charset);
         if ($leadingZeros) {
             $base58Encoded = str_repeat("1", $leadingZeros) . $base58Encoded;
         }

@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace FurqanSiddiqui\Base58;
 
+use Comely\DataTypes\BcMath\BaseConvert;
+use Comely\DataTypes\BcNumber;
 use FurqanSiddiqui\Base58\Result\Base58Encoded;
-use FurqanSiddiqui\BcMath\BcBaseConvert;
-use FurqanSiddiqui\BcMath\BcNumber;
 
 /**
  * Class Base58
@@ -47,7 +47,7 @@ class Base58
      */
     public static function Encode(BcNumber $decs, ?string $charset = null): Base58Encoded
     {
-        $base58 = BcBaseConvert::fromBase10($decs, self::Charset($charset));
+        $base58 = BaseConvert::fromBase10($decs, self::Charset($charset));
         $base58Encoded = new Base58Encoded($base58);
         $base58Encoded->readOnly(true); // Set to read-only
         return $base58Encoded;
@@ -60,7 +60,7 @@ class Base58
      */
     public static function Decode(Base58Encoded $encoded, ?string $charset = null): BcNumber
     {
-        return BcBaseConvert::toBase10($encoded->get(), self::Charset($charset));
+        return BaseConvert::toBase10($encoded->value(), self::Charset($charset));
     }
 
     /**
