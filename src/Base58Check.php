@@ -113,7 +113,7 @@ class Base58Check
                     ->digest("sha256", 2, $checksumLen); // 2 iterations of SHA256, get N bytes from final iteration
             }
 
-            if (!hash_equals($checksum, $validateChecksum->encode()->base16()->hexits())) {
+            if (!hash_equals($checksum, $validateChecksum->base16()->hexits())) {
                 throw new \UnexpectedValueException('Base58check decoded checksum does not match');
             }
         }
@@ -160,7 +160,7 @@ class Base58Check
             );
         }
 
-        $buffer->append($checksum->encode()->base16()); // Append checksum to passed binary data
+        $buffer->append($checksum->base16()); // Append checksum to passed binary data
         $leadingZeros = strlen($hexits) - strlen(ltrim($hexits, "0"));
         $leadingZeros = intval($leadingZeros / 2);
 

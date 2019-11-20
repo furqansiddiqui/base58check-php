@@ -16,7 +16,7 @@
     "php-64bit": "^7.2",
     "ext-openssl": "*",
     "ext-bcmath": "*",
-    "comely-io/data-types": "^1.0.24"
+    "comely-io/data-types": "^1.0.30"
   },
   "autoload": {
     "psr-4": {
